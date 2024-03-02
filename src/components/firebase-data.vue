@@ -1,8 +1,33 @@
 <template>
-    <div>
-        <button id="forward" @mousedown="SetMotorDir(1)" @mouseup="SetMotorDir(2)">Forward</button>
-        <button id="forward" @mousedown="SetMotorDir(0)" @mouseup="SetMotorDir(2)">Backward</button>
-        <input id="slider" type="range" v-model=MotorSpeed min=0 max=1023 @input="SetMotorSpeed(MotorSpeed)">
+    <div id="main">
+        <div id="titleParent">
+            <h1>Control Panel for Robotic Car</h1>
+            <div id="divider"></div>
+        </div>
+
+        <div id="boxParent">
+            <div class="buttons">
+                <div class="buttonParent">
+                    <button class="driveButtons" id="forward" @mousedown="SetMotorDir(1)"
+                        @mouseup="SetMotorDir(2)">Forward</button>
+                    <div id="lowerButtons">
+                        <button class="driveButtons" id="left">left</button>
+                        <button class="driveButtons" id="backward" @mousedown="SetMotorDir(0)"
+                            @mouseup="SetMotorDir(2)">Backward</button>
+                        <button class="driveButtons" id="right">right</button>
+                    </div>
+                </div>
+
+                <div class="buttonParent">
+                    <label id="speedLabel" for="slider">Speed: {{ MotorSpeed }}</label>
+                    <input id="slider" type="range" v-model=MotorSpeed min=0 max=1023 @input="SetMotorSpeed(MotorSpeed)">
+                </div>
+            </div>
+
+            <div id="liveFeedBox">
+                <img src="../../images/camera.png" alt="camera" width="500em">
+            </div>
+        </div>
     </div>
 </template>
   
@@ -19,11 +44,14 @@ export default {
     },
     methods: {
         SetMotorSpeed(value) {
+
+            const speedValue = parseInt(value, 10);
+
             set(ref(db, 'motorSpeed'), {
-                MotorSpeed: value,
+                MotorSpeed: speedValue,
             });
         },
-        SetMotorDir(value){
+        SetMotorDir(value) {
             set(ref(db, 'motorDir'), {
                 MotorDir: value
             })
@@ -31,67 +59,105 @@ export default {
     },
 };
 </script>
-  
+
 <style scoped>
-div {
+#main {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    background-color: #121212;
-    /* Dark background */
-    color: #e0e0e0;
-    /* Light text color for contrast */
 }
 
-button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+#titleParent {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+h1 {
+    color: azure;
+    font-size: 3em;
+}
+
+#divider {
+    align-self: center;
+    width: 94vw;
+    height: 1vh;
+    background-color: azure;
+    margin-bottom: 2vh;
+}
+
+#boxParent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: auto;
+}
+
+.buttonParent {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: auto;
+    height: 35vh;
+    border: 0.2em solid azure;
+    border-radius: 1em;
+    background-color: azure;
+    margin: 2em;
+    padding: 1em;
+}
+
+.buttons {
+    height: auto;
+    width: auto;
+}
+
+#lowerButtons {
+    display: flex;
+    justify-content: center;
+}
+
+.driveButtons {
+    padding: 0.5em;
+    margin: 0.5em;
+    width: 6vw;
+    height: 12vh;
+    display: inline-block;  
+    text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-}
-
-button:hover {
-    background-color: #444;
-}
-
-button:active {
-    background-color: #555;
-    transform: scale(0.98);
-    /* Subtle press effect */
-}
-
-p {
-    font-size: 1.2rem;
-}
-
-/* Style adjustments for input and range if used later */
-/* input[type="text"], input[type="range"] {
-    padding: 10px;
+    border: 1px solid #3498db;
     border-radius: 5px;
-    border: 1px solid #333;
-    background-color: #222;
-    color: #fff;
-    outline: none;
-  }
-  
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    background: #333;
-  }
-  
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #777;
-    cursor: pointer;
-  } */
-</style>
-  
+    color: #ffffff;
+    background-color: #3498db;
+    align-self: center;
+    text-align: center;
+    box-shadow: 0 8px 12px rgba(52, 152, 219, 0.3);
+}
+
+.driveButtons:hover{
+    background-color: #2980b9;
+    box-shadow: 0 8px 12px rgba(52, 152, 219, 0.5);
+}
+
+#slider {
+    width: 20vw;
+    align-self: center;
+    margin: 2em;
+
+}
+
+#speedLabel {
+    font-size: 2em;
+}
+
+#liveFeedBox {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-content: center;
+    width: auto;
+    height: auto;
+    border: 0.2em solid azure;
+    border-radius: 1em;
+    background-color: azure;
+    margin: 2em;
+    padding: 1em;
+}</style>

@@ -25,6 +25,7 @@ FirebaseConfig config;
 
 bool signupOK = false;
 int speed = 1023;
+int dir = 2;
 
 void setup(){
   Serial.begin(115200);
@@ -62,8 +63,39 @@ void setup(){
 }
 
 void loop(){
-  if (Firebase.ready() && signupOK){
-    speed = Firebase.RTDB.getInt(&fbdo, F("/MotorSpeed"));
-    Serial.println(speed);
+  if (Firebase.RTDB.getInt(&fbdo, "motorSpeed/MotorSpeed"))
+    {
+      speed = fbdo.intData();
+      // Set the position of the servo based on the retrieved value
+    }
+    if (Firebase.RTDB.getInt(&fbdo, "motorDir/MotorDir"))
+    {
+      dir = fbdo.intData();
+
+      switch (dir) {
+    case 0:  // your hand is on the sensor
+      driveBackwards(speed);
+      break;
+    case 1:  // your hand is close to the sensor
+      driveForward(speed);
+      break;
+    case 2:  // your hand is a few inches from the sensor
+      stop();
+      break;
   }
+      // Set the position of the servo based on the retrieved value
+    }
+    delay(1);
+}
+
+void driveForward(int speed){
+  Serial.println("driving forward with speed: " + speed);
+}
+
+void driveBackwards(int speed){
+  Serial.println("driving forward with speed: " +  speed);
+}
+
+void stop(){
+  Serial.println("standing still");
 }
