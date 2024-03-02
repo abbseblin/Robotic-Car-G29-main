@@ -11,10 +11,10 @@
                     <button class="driveButtons" id="forward" @mousedown="SetMotorDir(1)"
                         @mouseup="SetMotorDir(2)">Forward</button>
                     <div id="lowerButtons">
-                        <button class="driveButtons" id="left">left</button>
+                        <button class="driveButtons" id="left" @mousedown="SetServoDir(-50)" @mouseup="SetServoDir(0)">left</button>
                         <button class="driveButtons" id="backward" @mousedown="SetMotorDir(0)"
                             @mouseup="SetMotorDir(2)">Backward</button>
-                        <button class="driveButtons" id="right">right</button>
+                        <button class="driveButtons" id="right" @mousedown="SetServoDir(50)" @mouseup="SetServoDir(0)">right</button>
                     </div>
                 </div>
 
@@ -41,13 +41,12 @@ export default {
             data: '',
             MotorDir: 0,
             MotorSpeed: 1023,
+            servoAngle: 0
         };
     },
     methods: {
         SetMotorSpeed(value) {
-
             const speedValue = parseInt(value, 10);
-
             set(ref(db, 'motorSpeed'), {
                 MotorSpeed: speedValue,
             });
@@ -55,6 +54,11 @@ export default {
         SetMotorDir(value) {
             set(ref(db, 'motorDir'), {
                 MotorDir: value
+            })
+        },
+        SetServoDir(angle){
+            set(ref(db, 'servoAngle'),{
+                servoAngle: angle
             })
         }
     },
@@ -121,7 +125,7 @@ h1 {
     margin: 0.5em;
     width: 6vw;
     height: 12vh;
-    display: inline-block;  
+    display: inline-block;
     text-decoration: none;
     cursor: pointer;
     border: 1px solid #3498db;
@@ -133,7 +137,7 @@ h1 {
     box-shadow: 0 8px 12px rgba(52, 152, 219, 0.3);
 }
 
-.driveButtons:hover{
+.driveButtons:hover {
     background-color: #2980b9;
     box-shadow: 0 8px 12px rgba(52, 152, 219, 0.5);
 }
@@ -161,4 +165,5 @@ h1 {
     background-color: azure;
     margin: 2em;
     padding: 1em;
-}</style>
+}
+</style>
