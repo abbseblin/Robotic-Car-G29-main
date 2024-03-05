@@ -34,6 +34,67 @@
 <script>
 import { db, set, ref } from '@/components/firebase-connect'; // Adjust the path accordingly
 
+document.addEventListener('keydown', function(event) {
+    switch (event.key) {
+        case "w":
+        console.log("'w' key was pressed!");
+        document.getElementById("forward").classList.add("buttonHover");
+        document.getElementById("forward").dispatchEvent(new Event('mousedown'));
+            break;
+
+        case "a":
+        console.log("'w' key was pressed!");
+        document.getElementById("left").classList.add("buttonHover");
+        document.getElementById("left").dispatchEvent(new Event('mousedown'));
+            break;
+
+        case "s":
+        console.log("'w' key was pressed!");
+        document.getElementById("backward").classList.add("buttonHover");
+        document.getElementById("backward").dispatchEvent(new Event('mousedown'));
+            break;
+        
+        case "d":
+        console.log("'w' key was pressed!");
+        document.getElementById("right").classList.add("buttonHover");
+        document.getElementById("right").dispatchEvent(new Event('mousedown'));
+            break;    
+
+        default:
+            break;
+    }
+});
+
+document.addEventListener('keyup', function(event) {
+    switch (event.key) {
+        case "w":
+        console.log("'w' key was pressed!");
+        document.getElementById("forward").classList.remove("buttonHover");
+        document.getElementById("forward").dispatchEvent(new Event('mouseup'));
+            break;
+
+        case "a":
+        console.log("'w' key was pressed!");
+        document.getElementById("left").classList.remove("buttonHover");
+        document.getElementById("left").dispatchEvent(new Event('mouseup'));
+            break;
+
+        case "s":
+        console.log("'w' key was pressed!");
+        document.getElementById("backward").classList.remove("buttonHover");
+        document.getElementById("backward").dispatchEvent(new Event('mouseup'));
+            break;
+        
+        case "d":
+        console.log("'w' key was pressed!");
+        document.getElementById("right").classList.remove("buttonHover");
+        document.getElementById("right").dispatchEvent(new Event('mouseup'));
+            break;    
+    
+        default:
+            break;
+    }
+});
 
 export default {
     data() {
@@ -138,6 +199,11 @@ h1 {
 }
 
 .driveButtons:hover {
+    background-color: #2980b9;
+    box-shadow: 0 8px 12px rgba(52, 152, 219, 0.5);
+}
+
+.buttonHover{
     background-color: #2980b9;
     box-shadow: 0 8px 12px rgba(52, 152, 219, 0.5);
 }
