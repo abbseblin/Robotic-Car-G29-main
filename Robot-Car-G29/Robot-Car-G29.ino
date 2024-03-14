@@ -81,6 +81,7 @@ void loop() {
   }
   if (Firebase.RTDB.getInt(&fbdo, "servoAngle/servoAngle")) {
     angle = fbdo.intData();
+    servo.write(angle);
   }
   if (Firebase.RTDB.getInt(&fbdo, "motorDir/MotorDir")) {
     dir = fbdo.intData();
