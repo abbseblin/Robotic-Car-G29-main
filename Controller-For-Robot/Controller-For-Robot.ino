@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <Firebase_ESP_Client.h>
-#include <Wire.h>
-#include <Servo.h>
 
 //Provide the token generation process info.
 #include "addons/TokenHelper.h"
@@ -12,6 +10,13 @@
 // Insert your network credentials
 #define WIFI_SSID "Sebastian_iphone"
 #define WIFI_PASSWORD "Sebbe101"
+
+#define forwardPin 16
+#define reversePin 5
+#define VRX_PIN  A0 // Arduino pin connected to VRX pin
+int forwardButtonState = 0;
+int reverseButtonState = 0;
+int xValue = 0; // To store value of the X axis
 
 // Insert Firebase project API Key
 #define API_KEY "AIzaSyBE1C15MxYr7Xcg3gpfnMeiNcpsJnGGmxQ"
@@ -25,17 +30,10 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
-const int pwmMotorA = D1;
-const int dirMotorA = D3;
-Servo servo;
-int angle = 90;
-
 bool signupOK = false;
-int speed = 1023;
-int dir = 2;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to Wi-Fi");
   while (WiFi.status() != WL_CONNECTED) {
@@ -67,61 +65,28 @@ void setup() {
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
 
-  pinMode(pwmMotorA, OUTPUT);
-  pinMode(dirMotorA, OUTPUT);
-
-  Wire.begin();        // Initialize I2C communication
-  servo.attach(4);
+  pinMode(forwardPin, INPUT);
+  pinMode(reversePin, INPUT);
 }
 
 void loop() {
-  if (Firebase.RTDB.getInt(&fbdo, "motorSpeed/MotorSpeed")) {
-    speed = fbdo.intData();
-    // Set the position of the servo based on the retrieved value
+  forwardButtonState = digitalRead(forwardPin);
+  Serial.println(forwardButtonState);
+  reverseButtonState = digitalRead(reversePin);
+  xValue = analogRead(VRX_PIN);
+  float xValToDeg = (xValue * 140 / 1023) + 20;
+
+
+  if(forwardButtonState == 1 && reverseButtonState == 0){
+    Serial.println("forward");
+    Firebase.RTDB.setInt(&fbdo, "/motorDir/MotorDir", 1);
   }
-  if (Firebase.RTDB.getInt(&fbdo, "servoAngle/servoAngle")) {
-    angle = fbdo.intData();
-    servo.write(angle);
+  if(reverseButtonState == 1 && forwardButtonState == 0){
+    Serial.println("reverse");
+    Firebase.RTDB.setInt(&fbdo, "/motorDir/MotorDir", 0);
+  }  
+  if(forwardButtonState != 1 && reverseButtonState != 1){
+    Firebase.RTDB.setInt(&fbdo, "/motorDir/MotorDir", 2);
   }
-  if (Firebase.RTDB.getInt(&fbdo, "motorDir/MotorDir")) {
-    dir = fbdo.intData();
-
-    switch (dir) {
-      case 0:  // your hand is on the sensor
-        driveBackwards(speed, angle);
-        break;
-      case 1:  // your hand is close to the sensor
-        driveForward(speed, angle);
-        break;
-      case 2:  // your hand is a few inches from the sensor
-        stop();
-        break;
-    }
-    // Set the position of the servo based on the retrieved value
-  }
-  delay(1);
-}
-
-void driveForward(int speed, int angle) {
-  Serial.println(speed);
-
-  servo.write(angle);
-  analogWrite(pwmMotorA, speed);
-  digitalWrite(dirMotorA, LOW);
-}
-
-void driveBackwards(int speed, int angle) {
-  Serial.println(speed);
-  Serial.println(angle);
-
-  servo.write(angle);
-  analogWrite(pwmMotorA, speed);
-  digitalWrite(dirMotorA, HIGH);
-}
-
-void stop() {
-  Serial.println("standing still");
-
-  digitalWrite(pwmMotorA, 0);
-  digitalWrite(dirMotorA, LOW);
+  Firebase.RTDB.setInt(&fbdo, "/servoAngle/servoAngle", xValToDeg);
 }

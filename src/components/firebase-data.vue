@@ -11,10 +11,10 @@
                     <button class="driveButtons" id="forward" @mousedown="SetMotorDir(1)"
                         @mouseup="SetMotorDir(2)">Forward</button>
                     <div id="lowerButtons">
-                        <button class="driveButtons" id="left" @mousedown="SetServoDir(-50)" @mouseup="SetServoDir(0)">left</button>
+                        <button class="driveButtons" id="left" @mousedown="SetServoDir(20)" @mouseup="SetServoDir(90)">left</button>
                         <button class="driveButtons" id="backward" @mousedown="SetMotorDir(0)"
                             @mouseup="SetMotorDir(2)">Backward</button>
-                        <button class="driveButtons" id="right" @mousedown="SetServoDir(50)" @mouseup="SetServoDir(0)">right</button>
+                        <button class="driveButtons" id="right" @mousedown="SetServoDir(160)" @mouseup="SetServoDir(90)">right</button>
                     </div>
                 </div>
 
@@ -23,16 +23,13 @@
                     <input id="slider" type="range" v-model=MotorSpeed min=0 max=1023 @input="SetMotorSpeed(MotorSpeed)">
                 </div>
             </div>
-
-            <div id="liveFeedBox">
-                <img src="../../images/camera.png" alt="camera" width="500em">
-            </div>
         </div>
     </div>
 </template>
   
 <script>
 import { db, set, ref } from '@/components/firebase-connect'; // Adjust the path accordingly
+
 
 document.addEventListener('keydown', function(event) {
     switch (event.key) {
@@ -105,6 +102,8 @@ export default {
             servoAngle: 0
         };
     },
+    components: {
+  },
     methods: {
         SetMotorSpeed(value) {
             const speedValue = parseInt(value, 10);
@@ -127,6 +126,10 @@ export default {
 </script>
 
 <style scoped>
+template{
+    margin: 0;
+}
+
 #main {
     display: flex;
     flex-direction: column;
@@ -174,6 +177,7 @@ h1 {
 .buttons {
     height: auto;
     width: auto;
+    display: flex;
 }
 
 #lowerButtons {
@@ -217,19 +221,5 @@ h1 {
 
 #speedLabel {
     font-size: 2em;
-}
-
-#liveFeedBox {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-content: center;
-    width: auto;
-    height: auto;
-    border: 0.2em solid azure;
-    border-radius: 1em;
-    background-color: azure;
-    margin: 2em;
-    padding: 1em;
 }
 </style>

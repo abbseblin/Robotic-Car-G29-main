@@ -1,16 +1,16 @@
 <template>
-  <div id="app">
-    <firebaseData />
+  <div id="app"> 
+    <headerComponent/>
   </div>
 </template>
 
 <script>
-import firebaseData from './components/firebase-data.vue'
+import headerComponent from './components/headerComponent.vue'
 
 export default {
   name: 'App',
   components: {
-    firebaseData
+    headerComponent
   }
 }
 </script>
@@ -22,7 +22,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 30px;
+
 }
 body{
     background-color: #342E37;
