@@ -10,8 +10,8 @@
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "Sebastian_iphone"
-#define WIFI_PASSWORD "Sebbe101"
+#define WIFI_SSID "ABB_Gym_IOT"
+#define WIFI_PASSWORD "Welcome2abb"
 
 // Insert Firebase project API Key
 #define API_KEY "AIzaSyBE1C15MxYr7Xcg3gpfnMeiNcpsJnGGmxQ"
@@ -27,6 +27,9 @@ FirebaseConfig config;
 
 const int pwmMotorA = D1;
 const int dirMotorA = D3;
+const int pwmMotorB = D2;
+const int dirMotorB = D4;
+
 Servo servo;
 int angle = 90;
 
@@ -69,8 +72,10 @@ void setup() {
 
   pinMode(pwmMotorA, OUTPUT);
   pinMode(dirMotorA, OUTPUT);
+  pinMode(pwmMotorB, OUTPUT);
+  pinMode(dirMotorB, OUTPUT);
 
-  Wire.begin();        // Initialize I2C communication
+  Wire.begin();  // Initialize I2C communication
   servo.attach(4);
 }
 
@@ -88,10 +93,10 @@ void loop() {
 
     switch (dir) {
       case 0:  // your hand is on the sensor
-        driveBackwards(speed, angle);
+        driveBackwards(1023, angle);
         break;
       case 1:  // your hand is close to the sensor
-        driveForward(speed, angle);
+        driveForward(1023, angle);
         break;
       case 2:  // your hand is a few inches from the sensor
         stop();
@@ -103,11 +108,14 @@ void loop() {
 }
 
 void driveForward(int speed, int angle) {
+  Serial.println("Driving Forward");
   Serial.println(speed);
 
   servo.write(angle);
   analogWrite(pwmMotorA, speed);
-  digitalWrite(dirMotorA, LOW);
+  digitalWrite(dirMotorA, HIGH);
+  analogWrite(pwmMotorB, speed);
+  digitalWrite(dirMotorB, LOW);
 }
 
 void driveBackwards(int speed, int angle) {
@@ -117,11 +125,15 @@ void driveBackwards(int speed, int angle) {
   servo.write(angle);
   analogWrite(pwmMotorA, speed);
   digitalWrite(dirMotorA, HIGH);
+  analogWrite(pwmMotorB, speed);
+  digitalWrite(dirMotorB, HIGH);
 }
 
 void stop() {
   Serial.println("standing still");
 
-  digitalWrite(pwmMotorA, 0);
+  digitalWrite(pwmMotorA, 1023);
   digitalWrite(dirMotorA, LOW);
+  digitalWrite(pwmMotorB, 0);
+  digitalWrite(dirMotorB, LOW);
 }

@@ -8,8 +8,8 @@
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "Sebastian_iphone"
-#define WIFI_PASSWORD "Sebbe101"
+#define WIFI_SSID "ABB_Gym_IOT"
+#define WIFI_PASSWORD "Welcome2abb"
 
 #define forwardPin 16
 #define reversePin 5
@@ -74,7 +74,7 @@ void loop() {
   Serial.println(forwardButtonState);
   reverseButtonState = digitalRead(reversePin);
   xValue = analogRead(VRX_PIN);
-  float xValToDeg = (xValue * 140 / 1023) + 20;
+  float xValToDeg = (xValue * 140 / 1023) + 15;
 
 
   if(forwardButtonState == 1 && reverseButtonState == 0){
